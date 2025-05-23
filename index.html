@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODE XI - BTech CSE Learning Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF',
+                        secondary: '#1E3A8A',
+                        dark: '#0F172A',
+                        accent: '#3B82F6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .roadmap-container {
+            scrollbar-width: thin;
+            scrollbar-color: #3B82F6 #1E40AF;
+        }
+
+        .roadmap-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .roadmap-container::-webkit-scrollbar-track {
+            background: #1E40AF;
+            border-radius: 10px;
+        }
+
+        .roadmap-container::-webkit-scrollbar-thumb {
+            background-color: #3B82F6;
+            border-radius: 10px;
+        }
+
+        .admin-panel {
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .admin-panel.active {
+            transform: translateY(0);
+        }
+
+        .blur-background {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-200 min-h-screen">
+    <!-- Admin Login Button -->
+    <div class="fixed bottom-4 right-4 z-50">
+        <button id="adminLoginBtn" class="bg-primary hover:bg-accent text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110">
+            <i class="fas fa-lock"></i>
+        </button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel fixed inset-0 bg-dark bg-opacity-90 z-40 p-8 overflow-y-auto">
+        <div class="max-w-4xl mx-auto bg-gray-900 rounded-xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-accent">Admin Panel</h2>
+                <button id="closeAdminPanel" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <div id="loginForm" class="space-y-4">
+                <h3 class="text-xl font-semibold">Login</h3>
+                <div>
+                    <label class="block text-gray-300 mb-2">Username</label>
+                    <input type="text" id="adminUsername" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Password</label>
+                    <input type="password" id="adminPassword" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent">
+                </div>
+                <button id="adminLoginSubmit" class="bg-primary hover:bg-accent text-white px-6 py-2 rounded-lg transition-colors duration-300">Login</button>
+            </div>
+
+            <div id="adminControls" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-3 text-accent">Website Settings</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-300 mb-1">Website Name</label>
+                                <input type="text" id="websiteName" value="CODE XI" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 mb-1">Primary Color</label>
+                                <input type="color" id="primaryColor" value="#1E40AF" class="w-full h-10">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 mb-1">Accent Color</label>
+                                <input type="color" id="accentColor" value="#3B82F6" class="w-full h-10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-3 text-accent">Founder Information</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-gray-300 mb-1">Founder Name</label>
+                                <input type="text" id="founderName" value="KISHAN TIWARI" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 mb-1">Co-Founder Name</label>
+                                <input type="text" id="coFounderName" value="YUVRAJ SINGH" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-3 text-accent">Roadmap Content</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-300 mb-1">Select Roadmap</label>
+                            <select id="roadmapSelect" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1">
+                                <option value="aiMl">AI/ML Roadmap</option>
+                                <option value="aids">AIDS Roadmap</option>
+                                <option value="cybersecurity">Cybersecurity Roadmap</option>
+                                <option value="webDev">Web Development Roadmap</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-1">Roadmap Content</label>
+                            <textarea id="roadmapContent" rows="10" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button id="saveChanges" class="bg-primary hover:bg-accent text-white px-6 py-2 rounded-lg transition-colors duration-300">Save Changes</button>
+                    <button id="resetChanges" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors duration-300">Reset</button>
+                    <button id="logoutAdmin" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors duration-300">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Website -->
+    <div id="mainContent">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-dark to-primary py-6 shadow-lg">
+            <div class="container mx-auto px-4">
+                <h1 id="mainTitle" class="text-4xl md:text-5xl font-bold text-center text-white">CODE XI</h1>
+                <p class="text-center text-gray-300 mt-2">Your Ultimate BTech CSE Learning Platform</p>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="container mx-auto px-4 mt-8 max-w-3xl">
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Search roadmaps, topics..." class="w-full bg-gray-800 border border-gray-700 rounded-full px-6 py-3 pl-12 focus:outline-none focus:ring-2 focus:ring-accent">
+                <div class="absolute left-4 top-3.5 text-gray-400">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button id="searchBtn" class="absolute right-2 top-1.5 bg-accent hover:bg-primary text-white px-4 py-1.5 rounded-full text-sm transition-colors duration-300">Search</button>
+            </div>
+        </div>
+
+        <!-- Founder Info -->
+        <div class="container mx-auto px-4 mt-8 text-center">
+            <p class="text-gray-400">Founded by <span id="founderNameDisplay" class="text-accent font-medium">KISHAN TIWARI</span> and <span id="coFounderNameDisplay" class="text-accent font-medium">YUVRAJ SINGH</span></p>
+        </div>
+
+        <!-- Roadmaps Section -->
+        <div class="container mx-auto px-4 mt-12">
+            <h2 class="text-3xl font-bold text-center mb-8">BTech CSE Roadmaps</h2>
+
+            <!-- Roadmap Navigation -->
+            <div class="flex justify-center mb-8">
+                <div class="inline-flex rounded-md shadow-sm" role="group">
+                    <button type="button" data-roadmap="aiMl" class="roadmap-tab px-4 py-2 text-sm font-medium rounded-l-lg bg-primary text-white hover:bg-accent transition-colors duration-300">
+                        AI/ML
+                    </button>
+                    <button type="button" data-roadmap="aids" class="roadmap-tab px-4 py-2 text-sm font-medium border-l border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors duration-300">
+                        AIDS
+                    </button>
+                    <button type="button" data-roadmap="cybersecurity" class="roadmap-tab px-4 py-2 text-sm font-medium border-l border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors duration-300">
+                        Cybersecurity
+                    </button>
+                    <button type="button" data-roadmap="webDev" class="roadmap-tab px-4 py-2 text-sm font-medium rounded-r-lg border-l border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors duration-300">
+                        Web Dev
+                    </button>
+                </div>
+            </div>
+
+            <!-- Roadmap Content -->
+            <div class="roadmap-container bg-gray-900 rounded-xl p-6 shadow-lg overflow-x-auto">
+                <div id="aiMlRoadmap" class="roadmap-content">
+                    <h3 class="text-2xl font-bold mb-4 text-accent">AI/ML Roadmap</h3>
+                    <div class="space-y-6">
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 1: Foundations (3-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Mathematics: Linear Algebra, Calculus, Probability & Statistics</li>
+                                <li>Programming: Python (NumPy, Pandas, Matplotlib)</li>
+                                <li>Basic Algorithms and Data Structures</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 2: Machine Learning (4-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Supervised Learning: Linear Regression, Logistic Regression, Decision Trees, SVM</li>
+                                <li>Unsupervised Learning: Clustering, Dimensionality Reduction</li>
+                                <li>Model Evaluation and Validation</li>
+                                <li>Scikit-learn library</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 3: Deep Learning (6-9 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Neural Networks Basics</li>
+                                <li>TensorFlow/PyTorch frameworks</li>
+                                <li>CNN for Computer Vision</li>
+                                <li>RNN/LSTM for NLP</li>
+                                <li>Transfer Learning</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 4: Advanced Topics (6-12 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Reinforcement Learning</li>
+                                <li>Generative Models (GANs, VAEs)</li>
+                                <li>Model Deployment (Flask, FastAPI)</li>
+                                <li>MLOps</li>
+                                <li>Research Papers and Latest Trends</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="aidsRoadmap" class="roadmap-content hidden">
+                    <h3 class="text-2xl font-bold mb-4 text-accent">AIDS Roadmap</h3>
+                    <div class="space-y-6">
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 1: Core Computer Science (3-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Programming Fundamentals (Python, Java)</li>
+                                <li>Data Structures and Algorithms</li>
+                                <li>Computer Networks</li>
+                                <li>Database Management Systems</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 2: Data Engineering (4-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>SQL and NoSQL Databases</li>
+                                <li>Data Warehousing</li>
+                                <li>ETL Processes</li>
+                                <li>Big Data Technologies (Hadoop, Spark)</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 3: Analytics and Visualization (4-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Statistical Analysis</li>
+                                <li>Data Visualization (Matplotlib, Seaborn, Tableau)</li>
+                                <li>Business Intelligence Tools</li>
+                                <li>Predictive Analytics</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 4: Advanced Data Science (6-9 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Machine Learning Basics</li>
+                                <li>Cloud Platforms (AWS, GCP, Azure)</li>
+                                <li>Data Pipelines and Workflows</li>
+                                <li>Data Governance and Security</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cybersecurityRoadmap" class="roadmap-content hidden">
+                    <h3 class="text-2xl font-bold mb-4 text-accent">Cybersecurity Roadmap</h3>
+                    <div class="space-y-6">
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 1: Fundamentals (3-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Networking Basics</li>
+                                <li>Operating Systems (Linux, Windows)</li>
+                                <li>Basic Programming (Python, Bash)</li>
+                                <li>Cryptography Concepts</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 2: Security Concepts (4-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Security Protocols</li>
+                                <li>Vulnerability Assessment</li>
+                                <li>Penetration Testing Basics</li>
+                                <li>OWASP Top 10</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 3: Defensive Security (4-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>SIEM Solutions</li>
+                                <li>Firewalls and IDS/IPS</li>
+                                <li>Incident Response</li>
+                                <li>Security Compliance</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 4: Offensive Security (6-12 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Advanced Penetration Testing</li>
+                                <li>Red Teaming</li>
+                                <li>Malware Analysis</li>
+                                <li>Digital Forensics</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="webDevRoadmap" class="roadmap-content hidden">
+                    <h3 class="text-2xl font-bold mb-4 text-accent">Web Development Roadmap</h3>
+                    <div class="space-y-6">
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 1: Frontend Basics (3-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>HTML5 and CSS3</li>
+                                <li>JavaScript Fundamentals</li>
+                                <li>Responsive Design</li>
+                                <li>CSS Frameworks (Bootstrap, Tailwind)</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 2: Advanced Frontend (4-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>JavaScript ES6+</li>
+                                <li>Frontend Frameworks (React, Vue, Angular)</li>
+                                <li>State Management</li>
+                                <li>Web Performance</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 3: Backend Development (4-6 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Node.js or Python (Django/Flask)</li>
+                                <li>RESTful APIs</li>
+                                <li>Authentication (JWT, OAuth)</li>
+                                <li>Database Integration</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-phase">
+                            <h4 class="text-xl font-semibold mb-2 text-primary">Phase 4: Full Stack & DevOps (6-9 months)</h4>
+                            <ul class="list-disc pl-6 space-y-1 text-gray-300">
+                                <li>Microservices Architecture</li>
+                                <li>Containerization (Docker)</li>
+                                <li>CI/CD Pipelines</li>
+                                <li>Cloud Deployment (AWS, Vercel, Heroku)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-dark border-t border-gray-800 mt-16 py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-gray-400">&copy; 2023 CODE XI. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Admin Panel Functionality
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminPanel = document.getElementById('adminPanel');
+        const closeAdminPanel = document.getElementById('closeAdminPanel');
+        const adminLoginSubmit = document.getElementById('adminLoginSubmit');
+        const loginForm = document.getElementById('loginForm');
+        const adminControls = document.getElementById('adminControls');
+        const logoutAdmin = document.getElementById('logoutAdmin');
+
+        // Website Customization Elements
+        const mainTitle = document.getElementById('mainTitle');
+        const founderNameDisplay = document.getElementById('founderNameDisplay');
+        const coFounderNameDisplay = document.getElementById('coFounderNameDisplay');
+
+        // Admin Form Elements
+        const websiteName = document.getElementById('websiteName');
+        const primaryColor = document.getElementById('primaryColor');
+        const accentColor = document.getElementById('accentColor');
+        const founderName = document.getElementById('founderName');
+        const coFounderName = document.getElementById('coFounderName');
+        const roadmapSelect = document.getElementById('roadmapSelect');
+        const roadmapContent = document.getElementById('roadmapContent');
+        const saveChanges = document.getElementById('saveChanges');
+        const resetChanges = document.getElementById('resetChanges');
+
+        // Roadmap Elements
+        const roadmapTabs = document.querySelectorAll('.roadmap-tab');
+        const roadmapContents = document.querySelectorAll('.roadmap-content');
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        // Toggle Admin Panel
+        adminLoginBtn.addEventListener('click', () => {
+            adminPanel.classList.add('active');
+        });
+
+        closeAdminPanel.addEventListener('click', () => {
+            adminPanel.classList.remove('active');
+        });
+
+        // Admin Login
+        adminLoginSubmit.addEventListener('click', () => {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if(username === 'kishan' && password === 'kishan2314') {
+                loginForm.classList.add('hidden');
+                adminControls.classList.remove('hidden');
+
+                // Load current settings
+                websiteName.value = mainTitle.textContent;
+                founderName.value = founderNameDisplay.textContent;
+                coFounderName.value = coFounderNameDisplay.textContent;
+
+                // Clear password field
+                document.getElementById('adminPassword').value = '';
+            } else {
+                alert('Invalid credentials!');
+            }
+        });
+
+        // Logout
+        logoutAdmin.addEventListener('click', () => {
+            loginForm.classList.remove('hidden');
+            adminControls.classList.add('hidden');
+            adminPanel.classList.remove('active');
+        });
+
+        // Save Changes
+        saveChanges.addEventListener('click', () => {
+            // Update website name
+            mainTitle.textContent = websiteName.value;
+
+            // Update founder names
+            founderNameDisplay.textContent = founderName.value;
+            coFounderNameDisplay.textContent = coFounderName.value;
+
+            // Update colors
+            document.documentElement.style.setProperty('--color-primary', primaryColor.value);
+            document.documentElement.style.setProperty('--color-accent', accentColor.value);
+
+            // Update roadmap content
+            const selectedRoadmap = roadmapSelect.value;
+            const content = roadmapContent.value;
+
+            if(content) {
+                const targetElement = document.getElementById(`${selectedRoadmap}Roadmap`);
+                if(targetElement) {
+                    targetElement.innerHTML = `<h3 class="text-2xl font-bold mb-4 text-accent">${selectedRoadmap.toUpperCase()} Roadmap</h3>${content}`;
+                }
+            }
+
+            alert('Changes saved successfully!');
+        });
+
+        // Reset Changes
+        resetChanges.addEventListener('click', () => {
+            websiteName.value = mainTitle.textContent;
+            founderName.value = founderNameDisplay.textContent;
+            coFounderName.value = coFounderNameDisplay.textContent;
+            primaryColor.value = '#1E40AF';
+            accentColor.value = '#3B82F6';
+        });
+
+        // Roadmap Selection
+        roadmapSelect.addEventListener('change', () => {
+            // This would ideally load content from a database in a real application
+            // For demo, we'll just show a placeholder
+            roadmapContent.value = document.getElementById(`${roadmapSelect.value}Roadmap`).innerHTML;
+        });
+
+        // Roadmap Tab Navigation
+        roadmapTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const roadmap = tab.dataset.roadmap;
+
+                // Update active tab
+                roadmapTabs.forEach(t => {
+                    if(t === tab) {
+                        t.classList.remove('bg-gray-800', 'text-gray-300');
+                        t.classList.add('bg-primary', 'text-white');
+                    } else {
+                        t.classList.remove('bg-primary', 'text-white');
+                        t.classList.add('bg-gray-800', 'text-gray-300');
+                    }
+                });
+
+                // Show selected roadmap content
+                roadmapContents.forEach(content => {
+                    if(content.id === `${roadmap}Roadmap`) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Search Functionality
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.trim().toLowerCase();
+
+            if(query) {
+                // In a real application, this would call a search API
+                // For demo, we'll just highlight matching text in roadmaps
+                roadmapContents.forEach(content => {
+                    const text = content.textContent.toLowerCase();
+                    if(text.includes(query)) {
+                        const regex = new RegExp(query, 'gi');
+                        content.innerHTML = content.innerHTML.replace(regex, match =>
+                            `<span class="bg-yellow-500 text-black">${match}</span>`
+                        );
+                    }
+                });
+
+                // Open Google search in new tab (simulating Google API integration)
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(query + ' site:codexi.com')}`, '_blank');
+            }
+        });
+
+        // Press Enter to search
+$0
+        searchInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                searchBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
